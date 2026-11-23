@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.festivaltap</groupId>
+    <artifactId>persistence</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>Festival Tap - Persistence</name>
+    <description>Swappable JDK and AWS DynamoDB persistence adapters implementing outbound repository and event store ports for festival-tap.</description>
+    <url>https://github.com</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://apache.org</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <maven.compiler.release>24</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <core.version>1.0.0-SNAPSHOT</core.version>
+        <sugarcoat.version>1.0.0-SNAPSHOT</sugarcoat.version>
+        <junit.version>5.11.4</junit.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.sugarcoatlabs</groupId>
+            <artifactId>persistence-engines-core</artifactId>
+            <version>${sugarcoat.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sugarcoatlabs</groupId>
+            <artifactId>persistence-engines-dynamodb</artifactId>
+            <version>${sugarcoat.version}</version>
+        </dependency>
+        <!-- Core ports contract -->
+        <dependency>
+            <groupId>com.festivaltap</groupId>
+            <artifactId>core-ports</artifactId>
+            <version>${core.version}</version>
+        </dependency>
+
+        <!-- JUnit 5 for adapter tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages - festival-tap</name>
+            <url>https://github.com*</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <configuration>
+                        <release>${maven.compiler.release}</release>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>${maven-surefire-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages - festival-tap</name>
+            <url>https://maven.pkg.github.com/festival-tap/persistence</url>
+        </repository>
+    </distributionManagement>
+
+</project>
