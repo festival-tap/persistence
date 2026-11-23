@@ -1,0 +1,73 @@
+# ==============================================================================
+# Workflow: Persistence CI & GitHub Packages Publisher
+# Repository: festival-tap/persistence
+# ==============================================================================
+#
+# Purpose:
+#   Automates continuous integration and artifact publication for the pure-JDK
+#   and AWS DynamoDB persistence adapters (com.festivaltap:persistence).
+#
+# Triggers:
+#   - push (main): Runs full verification suite and publishes updated
+#     SNAPSHOT/release artifacts to GitHub Packages.
+#   - pull_request (main): Runs compilation and JUnit 5 integration tests
+#     without publishing artifacts.
+#
+# Dependencies & Package Resolution:
+#   - Resolves upstream contracts (com.festivaltap:core-ports) and storage
+#     engines (com.sugarcoatlabs:persistence-engines-*) from GitHub Packages
+#     using the Maven repository ID `github` configured in pom.xml.
+#   - Note: Upstream packages in `sugarcoat-labs` must either have Public
+#     visibility on GitHub Packages or use a classic PAT (`read:packages`)
+#     if hosted privately across organizations.
+#
+# Security & Permissions:
+#   - Minimal least-privilege GITHUB_TOKEN scopes:
+#       * contents: read  -> Checkout repository source code.
+#       * packages: write -> Read upstream packages & publish `persistence`.
+# ==============================================================================
+
+name: Persistence CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build-and-test:
+    name: Build, Verify & Publish (JDK 24)
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Fetch repository source code at the triggering commit SHA
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Provision Eclipse Temurin JDK 24, enable Maven dependency caching,
+      #    and generate ~/.m2/settings.xml bound to `<id>github</id>` in pom.xml
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+          cache: 'maven'
+          server-id: github
+          server-username: ${{ github.actor }}
+          server-password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 3. Compile JPMS module (`com.festivaltap.persistence`) and execute
+      #    JUnit 5 integration tests against the JDK in-memory engine
+      - name: Build and run unit tests
+        run: mvn -B clean verify
+
+      # 4. Publish compiled JAR and POM to GitHub Packages on merges to `main`
+      #    (skips re-running tests already verified in step 3)
+      - name: Publish package to GitHub Packages
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: mvn -B deploy -DskipTests
