@@ -84,9 +84,9 @@
 
     <repositories>
         <repository>
-            <id>github-sugarcoat-labs</id>
-            <name>GitHub Packages - sugarcoat-labs</name>
-            <url>https://maven.pkg.github.com/sugarcoat-labs</url>
+            <id>github-sugarcoat-labs-core</id>
+            <name>GitHub Packages - persistence-engines-core</name>
+            <url>https://maven.pkg.github.com/sugarcoat-labs/persistence-engines-core</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
@@ -95,9 +95,20 @@
             </snapshots>
         </repository>
         <repository>
-            <id>github-festival-tap</id>
-            <name>GitHub Packages - festival-tap</name>
-            <url>https://maven.pkg.github.com/festival-tap</url>
+            <id>github-sugarcoat-labs-dynamodb</id>
+            <name>GitHub Packages - persistence-engines-dynamodb</name>
+            <url>https://maven.pkg.github.com/sugarcoat-labs/persistence-engines-dynamodb</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>github-festival-tap-core-ports</id>
+            <name>GitHub Packages - core-ports</name>
+            <url>https://maven.pkg.github.com/festival-tap/core-ports</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
