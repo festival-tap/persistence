@@ -7,19 +7,19 @@
 
     <!--
         SPEC (Source of Truth):
-        - Module: com.festivaltap:persistence (version 1.0.0-SNAPSHOT, jar), implementing swappable JDK and AWS DynamoDB persistence adapters for festival-tap.
+        - Module: com.festivaltap:persistence (version 1.0.0, jar), implementing swappable JDK and AWS DynamoDB persistence adapters for festival-tap.
         - Runtime/Java target: Requires Java 24 or higher and compiles with Java 24 release target.
         - What is downloaded (inbound):
-          * From https://maven.pkg.github.com/sugarcoat-labs: com.sugarcoatlabs:persistence-engines-core and com.sugarcoatlabs:persistence-engines-dynamodb.
-          * From https://maven.pkg.github.com/festival-tap: com.festivaltap:core-ports (the outbound ports contract).
+          * From https://maven.pkg.github.com/sugarcoat-labs: com.sugarcoatlabs:persistence-engines-core (1.0.0) and com.sugarcoatlabs:persistence-engines-dynamodb (1.0.0).
+          * From https://maven.pkg.github.com/festival-tap: com.festivaltap:core-ports (1.0.0, the outbound ports contract).
           * From Maven Central (test scope only): org.junit.jupiter:junit-jupiter for adapter tests.
         - Boundary rule: This module may depend on com.festivaltap:core-ports, and must never depend on com.festivaltap:core-domain.
-        - What is distributed (outbound): Publishes com.festivaltap:persistence (jar and pom) for releases and snapshots to https://maven.pkg.github.com/festival-tap/persistence.
+        - What is distributed (outbound): Publishes com.festivaltap:persistence (1.0.0 jar and pom) to https://maven.pkg.github.com/festival-tap/persistence.
         -->
 
     <groupId>com.festivaltap</groupId>
     <artifactId>persistence</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Festival Tap - Persistence</name>
@@ -44,8 +44,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <core.version>1.0.0-SNAPSHOT</core.version>
-        <sugarcoat.version>1.0.0-SNAPSHOT</sugarcoat.version>
+        <core.version>1.0.0</core.version>
+        <sugarcoat.version>1.0.0</sugarcoat.version>
         <junit.version>5.11.4</junit.version>
 
         <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
@@ -91,7 +91,7 @@
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
         <repository>
@@ -102,7 +102,7 @@
                 <enabled>true</enabled>
             </releases>
             <snapshots>
-                <enabled>true</enabled>
+                <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>

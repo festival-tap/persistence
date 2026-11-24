@@ -1,22 +1,21 @@
 # ==============================================================================
-# Workflow: Persistence CI & GitHub Packages Publisher
-# Repository: festival-tap/persistence
-# ==============================================================================
-#
-# Purpose:
-#   Automates continuous integration and artifact publication for the pure-JDK
-#   and AWS DynamoDB persistence adapters (com.festivaltap:persistence).
-#
-# Triggers:
-#   - push (main): Runs full verification suite and publishes updated
-#     SNAPSHOT/release artifacts to GitHub Packages.
-#   - pull_request (main): Runs compilation and JUnit 5 integration tests
-#     without publishing artifacts.
-#
-# Dependencies & Package Resolution:
-#   - Resolves upstream contracts (`com.festivaltap:core-ports`) and storage
-#     engines (`com.sugarcoatlabs:persistence-engines-*`) from GitHub Packages
-#     using server IDs `github-festival-tap` and `github-sugarcoat-labs`.
+# SPEC (Source of Truth):
+# - Workflow: Persistence CI & GitHub Packages Publisher (`festival-tap/persistence`).
+# - Version Policy: Release version `1.0.0` across `com.festivaltap:persistence`,
+#   `com.festivaltap:core-ports`, and `com.sugarcoatlabs` persistence engines.
+# - Triggers: Runs on every push or pull request targeting `main`.
+# - Runtime & Build: Uses `ubuntu-latest` with Eclipse Temurin JDK 24 and Maven
+#   dependency caching (`actions/setup-java@v5`).
+# - Credentials & Repositories: Generates `${MAVEN_SETTINGS}` (`/tmp/settings.xml`)
+#   with `<server>` entries for `github-sugarcoat-labs` and `github-festival-tap`
+#   using `${GITHUB_ACTOR}` and `${PACKAGES_TOKEN}` (`secrets.GH_PACKAGES_TOKEN`
+#   falling back to `secrets.GITHUB_TOKEN`).
+# - Verification & Publishing:
+#     * All pushes and PRs targeting `main` run `mvn -B -s "${MAVEN_SETTINGS}" clean verify`.
+#     * Pushes to `main` also run `mvn -B -s "${MAVEN_SETTINGS}" deploy -DskipTests`
+#       to publish `com.festivaltap:persistence` (`1.0.0`) to GitHub Packages
+#       (`https://maven.pkg.github.com/festival-tap/persistence`).
+# - Permissions: Requires `contents: read` and `packages: write`.
 # ==============================================================================
 
 name: Persistence CI
@@ -56,12 +55,12 @@ jobs:
           <settings>
             <servers>
               <server>
-                <id>github-festival-tap</id>
+                <id>github-sugarcoat-labs</id>
                 <username>${GITHUB_ACTOR}</username>
                 <password>${PACKAGES_TOKEN}</password>
               </server>
               <server>
-                <id>github-sugarcoat-labs</id>
+                <id>github-festival-tap</id>
                 <username>${GITHUB_ACTOR}</username>
                 <password>${PACKAGES_TOKEN}</password>
               </server>
