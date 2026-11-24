@@ -5,6 +5,18 @@
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+        SPEC (Source of Truth):
+        - Module: com.festivaltap:persistence (version 1.0.0-SNAPSHOT, jar), implementing swappable JDK and AWS DynamoDB persistence adapters for festival-tap.
+        - Runtime/Java target: Requires Java 24 or higher and compiles with Java 24 release target.
+        - What is downloaded (inbound):
+          * From https://maven.pkg.github.com/sugarcoat-labs: com.sugarcoatlabs:persistence-engines-core and com.sugarcoatlabs:persistence-engines-dynamodb.
+          * From https://maven.pkg.github.com/festival-tap: com.festivaltap:core-ports (the outbound ports contract).
+          * From Maven Central (test scope only): org.junit.jupiter:junit-jupiter for adapter tests.
+        - Boundary rule: This module may depend on com.festivaltap:core-ports, and must never depend on com.festivaltap:core-domain.
+        - What is distributed (outbound): Publishes com.festivaltap:persistence (jar and pom) for releases and snapshots to https://maven.pkg.github.com/festival-tap/persistence.
+        -->
+
     <groupId>com.festivaltap</groupId>
     <artifactId>persistence</artifactId>
     <version>1.0.0-SNAPSHOT</version>
@@ -35,10 +47,12 @@
         <core.version>1.0.0-SNAPSHOT</core.version>
         <sugarcoat.version>1.0.0-SNAPSHOT</sugarcoat.version>
         <junit.version>5.11.4</junit.version>
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-        <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-        <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
+
+        <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.5</maven-surefire-plugin.version>
+        <maven-jar-plugin.version>3.5.1</maven-jar-plugin.version>
+        <maven-deploy-plugin.version>3.2.0</maven-deploy-plugin.version>
+        <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
     </properties>
 
     <dependencies>
@@ -119,9 +133,38 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                     <version>${maven-deploy-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>${maven-enforcer-plugin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-spec</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[24,)</version>
+                                </requireJavaVersion>
+                                <bannedDependencies>
+                                    <excludes>
+                                        <exclude>com.festivaltap:core-domain</exclude>
+                                    </excludes>
+                                </bannedDependencies>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
