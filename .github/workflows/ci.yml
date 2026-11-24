@@ -8,13 +8,13 @@
 #   dependency caching (`actions/setup-java@v5`).
 # - Credentials & Repositories: Generates `${MAVEN_SETTINGS}` (`/tmp/settings.xml`)
 #   with `<server>` entries for `github-sugarcoat-labs` and `github-festival-tap`
-#   using `${GITHUB_ACTOR}` and `${PACKAGES_TOKEN}` (`secrets.GH_PACKAGES_TOKEN`
+#   using `${env.GITHUB_ACTOR}` and `${env.PACKAGES_TOKEN}` (`secrets.GH_PACKAGES_TOKEN`
 #   falling back to `secrets.GITHUB_TOKEN`).
 # - Verification & Publishing:
 #     * All pushes and PRs targeting `main` run `mvn -B -s "${MAVEN_SETTINGS}" clean verify`.
 #     * Pushes to `main` also run `mvn -B -s "${MAVEN_SETTINGS}" deploy -DskipTests`
 #       to publish `com.festivaltap:persistence` (`1.0.0`) to GitHub Packages
-#       (`https://maven.pkg.github.com/festival-tap/persistence`).
+#       (`[https://maven.pkg.github.com/festival-tap/persistence](https://maven.pkg.github.com/festival-tap/persistence)`).
 # - Permissions: Requires `contents: read` and `packages: write`.
 # ==============================================================================
 
@@ -51,18 +51,18 @@ jobs:
 
       - name: Configure Maven settings for GitHub Packages
         run: |
-          cat << EOF > "${MAVEN_SETTINGS}"
+          cat << 'EOF' > "${MAVEN_SETTINGS}"
           <settings>
             <servers>
               <server>
                 <id>github-sugarcoat-labs</id>
-                <username>${GITHUB_ACTOR}</username>
-                <password>${PACKAGES_TOKEN}</password>
+                <username>${env.GITHUB_ACTOR}</username>
+                <password>${env.PACKAGES_TOKEN}</password>
               </server>
               <server>
                 <id>github-festival-tap</id>
-                <username>${GITHUB_ACTOR}</username>
-                <password>${PACKAGES_TOKEN}</password>
+                <username>${env.GITHUB_ACTOR}</username>
+                <password>${env.PACKAGES_TOKEN}</password>
               </server>
             </servers>
           </settings>
